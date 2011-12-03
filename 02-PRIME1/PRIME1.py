@@ -4,53 +4,60 @@ import math
 import sys
 
 def main():
+  p = Prime()
   input = sys.stdin
   records = int(input.next().strip())
   for _ in xrange(records):
     line = input.next().strip()
     start,stop = [int(n) for n in  line.split(' ')]
-    output_primes(start, stop)
+    p.print_range(start, stop)
 
-def output_filter_primes(start,stop):
-  for n in [x for x in FILTER_PRIMES if start <= x <= stop]:
-    print n
+class Prime(object):
+  def __init__(self, upper_limit=1000000000):
+    self.prime = {}
+    self.upper_limit = upper_limit
+    self.factor_limit = int(math.ceil(math.sqrt(upper_limit)))
+    self._populate_filter_primes()
 
-def output_primes(start,stop):
-  if (stop <= UPPER_FACTOR_LIMIT):
-    output_filter_primes(start,stop)
-  elif (start < LAST_FILTER_PRIME):
-    output_filter_primes(start,stop)
-    candidates = xrange(LAST_FILTER_PRIME+2, stop+1, 2)
-    for n in candidates:
-      for factor in FILTER_PRIMES:
-        if n % factor == 0: break
-      else: print n
-  elif (LAST_FILTER_PRIME < start):
-    if start % 2  == 0: start = start+1
-    candidates = xrange(start, stop+1, 2)
-    for n in candidates:
-      for factor in FILTER_PRIMES:
-        if n % factor == 0: break
-      else: print n
-  print ''
-      
-    
+  def _populate_filter_primes(self):
 
-def slow_primes(n):
-  """Uses sieve of eratosthenes. Use to calculate primes up to limit of
-  possible square roots of primes, then use this list as a base to factor
-  larger data sets."""
-  factor_limit = int(math.ceil(math.sqrt(n)))
-  current = 2
-  data = range(2, n)
-  while current < factor_limit:
-    idx = data.index(current) + 1
-    data = data[:idx] + [x for x in data[idx:] if x % current != 0]
-    current = data[idx]
-  return data
+    self.filter_primes = self._primes(self.factor_limit)
+
+    for num in range(self.factor_limit):
+      self.prime[num] = False
+
+    for num in self.filter_primes:
+      self.prime[num] = True
+
+  @staticmethod
+  def _primes(n):
+    factor_limit = int(math.ceil(math.sqrt(n)))
+    current = 2
+    data = range(2, n)
+    while current < factor_limit:
+      idx = data.index(current) + 1
+      data = data[:idx] + [x for x in data[idx:] if x % current != 0]
+      current = data[idx]
+    return data
+
+  def isprime(self, n):
+    if n not in self.prime:
+      self._insert_number(n)
+    return self.prime[n]
+
+  def _insert_number(self, n):
+    is_prime = False
+    for factor in self.filter_primes:
+      if n % factor == 0: break
+    else:
+      is_prime = True
+    self.prime[n] = is_prime
+
+  def print_range(self, start, stop):
+    for n in xrange(start, stop+1):
+      if self.isprime(n):
+        print n
+    print ''
 
 if __name__ == "__main__":
-  UPPER_FACTOR_LIMIT = int(math.ceil(math.sqrt(1E9)))
-  FILTER_PRIMES = slow_primes(UPPER_FACTOR_LIMIT)
-  LAST_FILTER_PRIME = FILTER_PRIMES[-1]
   main()
