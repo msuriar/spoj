@@ -6,14 +6,15 @@ import sys
 def main():
   p = Prime()
 
-"""
   input = sys.stdin
   records = int(input.next().strip())
-  for _ in xrange(records):
+  for x in xrange(records):
     line = input.next().strip()
     start,stop = [int(n) for n in  line.split(' ')]
     p.print_range(start, stop)
-"""
+    if x+1 != records:
+      print ''
+
 
 class Prime(object):
   def __init__(self, upper_limit=1000000000):
@@ -65,7 +66,6 @@ class Prime(object):
       self._print_upper_range(candidates)
     else:
       raise Exception("Should not have got here!")
-    print ''
 
 
   def _print_static_range(self, start, stop):
