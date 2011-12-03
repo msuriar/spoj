@@ -5,6 +5,7 @@ import sys
 
 def main():
   fullprimes = [2]
+  extend_primes(31623, fullprimes)
   input = sys.stdin
   records = int(input.next().strip())
   for _ in xrange(records):
@@ -36,17 +37,17 @@ def output_primes(start, stop, fullprimes):
     print number
   print ''
 
-def extend_primes(fullprimes):
+def extend_primes(upper_limit, fullprimes):
   """Given a list of primes, find the next highest prime."""
 
   # Start with the number above our highest prime.
   candidate = fullprimes[-1] + 1
 
-  while(True):
+  while(fullprimes[-1] < upper_limit):
     # To check the primacy of candidate, we only need primes up to
     # sqrt(candidate)
-    prime_limit = int(math.ceil(math.sqrt(candidate)))
-    limited_primes = [x for x in fullprimes if x < prime_limit]
+    local_limit = int(math.ceil(math.sqrt(candidate)))
+    limited_primes = [x for x in fullprimes if x < local_limit]
 
     if check_factors(candidate, limited_primes):
       # Candidate has a factor in the existing prime list, try again.
@@ -54,7 +55,42 @@ def extend_primes(fullprimes):
     else:
       # We've found a new prime number. Append and return.
       fullprimes.append(candidate)
-      return fullprimes
+
+  return fullprimes
+
+def generate_primes(upper_output_limit, seed_primes=[2]):
+  candidate = seed_primes[-1] + 1
+
+  test_primes = seed_primes[:]
+
+  upper_test_limit = int(math.ceil(math.sqrt(upper_output_limit)))
+
+  while test_primes[-1] < upper_test_limit:
+    if check_factors(candidate, test_primes):
+      # Candidate has a factor in the existing list of primes. Move on.
+      candidate = candidate+1
+    else:
+      # We've found a new prime, hurray! Add it to both the test_primes and
+      # output primes.
+      test_primes.append(candidate)
+      candidate = candidate+1
+
+  #  Now we're just extending the output, not the test set. Create a copy.
+  output_primes = test_primes[:]
+
+  while output_primes[-1] < upper_output_limit:
+    if check_factors(candidate, test_primes):
+      # Candidate has a factor in the existing list of primes. Move on.
+      candidate = candidate+1
+    else:
+      # We've found a new prime, hurray! Add it to both the test_primes and
+      # output primes.
+      output_primes.append(candidate)
+      candidate = candidate+1
+
+  return output_primes
+
+
 
 def check_factors(number, factor_list):
   """Check if factor_list contains a number which is a factor of number.
