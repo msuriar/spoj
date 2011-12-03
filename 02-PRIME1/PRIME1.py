@@ -10,14 +10,16 @@ def main():
     line = input.next().strip()
     start,stop = [int(n) for n in  line.split(' ')]
     output_primes(start, stop)
- 
+
+def output_filter_primes(start,stop):
+  for n in [x for x in FILTER_PRIMES if start <= x <= stop]:
+    print n
+
 def output_primes(start,stop):
   if (stop <= UPPER_FACTOR_LIMIT):
-    for n in [x for x in FILTER_PRIMES if start <= x <= stop]:
-      print n
+    output_filter_primes(start,stop)
   elif (start < LAST_FILTER_PRIME):
-    for n in [x for x in FILTER_PRIMES if start <= x]:
-      print n
+    output_filter_primes(start,stop)
     candidates = xrange(LAST_FILTER_PRIME+2, stop+1, 2)
     for n in candidates:
       for factor in FILTER_PRIMES:
