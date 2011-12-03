@@ -14,7 +14,8 @@ def main():
 
 def output_primes(start, stop, fullprimes):
   """Print out all primes between start and stop from the list fullprimes."""
-  while (fullprimes[-1] < stop):
+  prime_limit = int(math.ceil(math.sqrt(stop)))
+  while (fullprimes[-1] < prime_limit):
     extend_primes(fullprimes)
   desired_primes = [x for x in fullprimes if (start <= x <= stop)]
   for number in desired_primes:
