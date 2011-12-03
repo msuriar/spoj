@@ -14,10 +14,24 @@ def main():
 
 def output_primes(start, stop, fullprimes):
   """Print out all primes between start and stop from the list fullprimes."""
-  prime_limit = int(math.ceil(math.sqrt(stop)))
-  while (fullprimes[-1] < prime_limit):
+  prime_limit = int(math.floor(math.sqrt(stop)))
+  while (fullprimes[-1] <= prime_limit):
     extend_primes(fullprimes)
-  desired_primes = [x for x in fullprimes if (start <= x <= stop)]
+
+  limited_primes = [x for x in fullprimes if x <= prime_limit]
+
+  desired_primes = []
+
+  actual_start = max(start, 2)
+
+  for n in xrange(actual_start, stop+1):
+    if n in limited_primes:
+      desired_primes.append(n)
+    elif not check_factors(n, limited_primes):
+      desired_primes.append(n)
+    else:
+      continue
+
   for number in desired_primes:
     print number
   print ''
@@ -32,7 +46,7 @@ def extend_primes(fullprimes):
     # To check the primacy of candidate, we only need primes up to
     # sqrt(candidate)
     prime_limit = int(math.ceil(math.sqrt(candidate)))
-    limited_primes = [x for x in fullprimes if x <= prime_limit]
+    limited_primes = [x for x in fullprimes if x < prime_limit]
 
     if check_factors(candidate, limited_primes):
       # Candidate has a factor in the existing prime list, try again.
@@ -41,7 +55,6 @@ def extend_primes(fullprimes):
       # We've found a new prime number. Append and return.
       fullprimes.append(candidate)
       return fullprimes
-
 
 def check_factors(number, factor_list):
   """Check if factor_list contains a number which is a factor of number.
