@@ -11,7 +11,7 @@ def main():
   for x in xrange(records):
     line = input.next().strip()
     start,stop = [int(n) for n in  line.split(' ')]
-    p.print_range(start, stop)
+    print p.gen_output(start, stop)
     if x+1 != records:
       print ''
 
@@ -36,7 +36,7 @@ class Prime(object):
       idx = data.index(current) + 1
       data = data[:idx] + [x for x in data[idx:] if x % current != 0]
       current = data[idx]
-    return data
+    return tuple(data)
 
   def isprime(self, n):
     if n in self.prime:
@@ -53,29 +53,26 @@ class Prime(object):
       is_prime = True
     self.prime[n] = is_prime
 
-  def print_range(self, start, stop):
+  def gen_output(self, start, stop):
     if stop <= self.factor_limit:
-      self._print_static_range(start, stop)
+      return self._gen_static_output(start, stop)
     elif start < self.last_filter_prime:
-      self._print_static_range(start,stop)
+      first = self._gen_static_output(start,stop)
       candidates = xrange(self.last_filter_prime+2, stop+1, 2)
-      self._print_upper_range(candidates)
+      second = self._gen_upper_output(candidates)
+      return '\n'.join((first, second))
     elif self.last_filter_prime < start:
       if start % 2 == 0: start = start+1
       candidates = xrange(start, stop+1, 2)
-      self._print_upper_range(candidates)
+      return self._gen_upper_output(candidates)
     else:
       raise Exception("Should not have got here!")
 
+  def _gen_static_output(self, start, stop):
+    return '\n'.join([str(x) for x in self.filter_primes if start <= x <= stop])
 
-  def _print_static_range(self, start, stop):
-    for n in [ x for x in self.filter_primes if start <= x <= stop]:
-        print n
-
-  def _print_upper_range(self, candidates):
-    for n in candidates:
-      if self.isprime(n):
-        print n
+  def _gen_upper_output(self, candidates):
+    return '\n'.join([str(x) for x in candidates if self.isprime(x)])
 
 if __name__ == "__main__":
   main()
