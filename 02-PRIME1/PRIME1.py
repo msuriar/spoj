@@ -26,8 +26,6 @@ class Prime(object):
   def max_filter_prime(self):
     return self.filter_primes[-1]
 
-  @staticmethod
-
   def extend_filter_primes(self, new_limit):
     current = self.filter_primes[-1] + 2
     data = self.filter_primes + range(current, new_limit)
