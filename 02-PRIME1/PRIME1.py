@@ -27,15 +27,6 @@ class Prime(object):
     return self.filter_primes[-1]
 
   @staticmethod
-  def _primes(n):
-    factor_limit = int(math.ceil(math.sqrt(n)))
-    current = 2
-    data = range(2, n)
-    while current < factor_limit:
-      idx = data.index(current) + 1
-      data = data[:idx] + [x for x in data[idx:] if x % current != 0]
-      current = data[idx]
-    return data
 
   def extend_filter_primes(self, new_limit):
     current = self.filter_primes[-1] + 2
