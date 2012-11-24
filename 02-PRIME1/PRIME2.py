@@ -32,6 +32,9 @@ def primes(m, n, filters):
   Outputs:
     A single prime per line.
   """
+  if m<2:
+    m = 2
+
   largest_prime = int(math.sqrt(n))
   sieves = [ prime for prime in filters if prime <= largest_prime ]
   num_candidates = n-m+1
@@ -40,6 +43,9 @@ def primes(m, n, filters):
     floor = m / sieve * sieve
     start = floor + sieve
     index = start - m
+    if index + m == sieve:
+      index +=sieve
+
     while index  < num_candidates:
       candidates[index] = False
       index += sieve
