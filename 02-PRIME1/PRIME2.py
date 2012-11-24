@@ -12,21 +12,40 @@ import sys
 
 
 def main():
-  FILTER_PRIMES = gen_primes(100000)
+  sieves = gen_primes(100000)
   input = sys.stdin
   records = int(input.next().strip())
+  for x in xrange(records):
+    line = input.next().strip()
+    start,stop = ( int(n) for n in line.split(' ') )
+    primes(start, stop, sieves)
+    print ''
 
-def primes(m, n):
-  """Return all primes between m and n.
 
+def primes(m, n, filters):
+  """Print all primes between m and n.
   Args:
     m, n integers
+    filters, list of primes
   Returns:
-    A list of integers
+    Nothing
+  Outputs:
+    A single prime per line.
   """
-  num_candidates = n-m
-  candidates = [ True ] * num_candidates
   largest_prime = int(math.sqrt(n))
+  sieves = [ prime for prime in filters if prime <= largest_prime ]
+  num_candidates = n-m+1
+  candidates = [ True ] * num_candidates
+  for sieve in sieves:
+    floor = m / sieve * sieve
+    start = floor + sieve
+    index = start - m
+    while index  < num_candidates:
+      candidates[index] = False
+      index += sieve
+  for candidate in range(num_candidates):
+    if candidates[candidate]:
+      print candidate+m
 
 def gen_primes(limit):
   """Generate a list of primes up to the limit specified."""
@@ -48,4 +67,5 @@ def gen_primes(limit):
   return [ x for x in range(limit+1) if candidates[x] ]
 
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+  main()
