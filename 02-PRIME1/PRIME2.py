@@ -12,14 +12,15 @@ import sys
 
 
 def main():
-  sieves = gen_primes(100000)
+  sieves = gen_primes(32768)
   input = sys.stdin
   records = int(input.next().strip())
   for x in xrange(records):
     line = input.next().strip()
     start,stop = ( int(n) for n in line.split(' ') )
     primes(start, stop, sieves)
-    print ''
+    if x < records-1:
+      print ''
 
 
 def primes(m, n, filters):
