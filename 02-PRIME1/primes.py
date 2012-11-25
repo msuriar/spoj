@@ -37,12 +37,15 @@ def primes(m, n, filters):
     m = 2
 
   largest_prime = int(math.sqrt(n))
-  sieves = [ prime for prime in filters if prime <= largest_prime ]
+  sieves = ( prime for prime in filters if prime <= largest_prime )
   num_candidates = n-m+1
   candidates = [ True ] * num_candidates
   for sieve in sieves:
-    floor = m / sieve * sieve
-    start = floor + sieve
+    start = m / sieve * sieve
+    if start < m:
+      start = start + sieve
+    else: pass
+
     index = start - m
     if index + m == sieve:
       index +=sieve
